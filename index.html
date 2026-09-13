@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator UI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #050816, #172554);
+      color: white;
+    }
+
+    .calculator {
+      width: 420px;
+      max-width: 100%;
+      padding: 20px;
+      border-radius: 28px;
+      background: #111827;
+      border: 1px solid #334155;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+    }
+
+    .title {
+      margin-bottom: 12px;
+      color: #60a5fa;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .display {
+      height: 120px;
+      margin-bottom: 14px;
+      padding: 15px;
+      border-radius: 18px;
+      background: #020617;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .history {
+      width: 100%;
+      height: 24px;
+      color: #64748b;
+      font-size: 14px;
+      text-align: right;
+      overflow: hidden;
+    }
+
+    .answer {
+      width: 100%;
+      color: white;
+      font-size: 38px;
+      font-weight: bold;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .section-title {
+      margin: 10px 0 7px;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .extras {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .extras button {
+      height: 42px;
+      border: none;
+      border-radius: 11px;
+      background: #334155;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .extras button:hover {
+      background: #475569;
+    }
+
+    .main-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+    }
+
+    button {
+      border: none;
+      border-radius: 15px;
+      color: white;
+      background: #1e293b;
+      font-size: 21px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.08s, filter 0.08s;
+    }
+
+    .main-buttons button {
+      height: 62px;
+    }
+
+    button:hover {
+      filter: brightness(1.2);
+    }
+
+    button:active {
+      transform: scale(0.94);
+    }
+
+    .operator {
+      background: #2563eb;
+    }
+
+    .clear {
+      background: #dc2626;
+    }
+
+    .equals {
+      background: #16a34a;
+    }
+
+    .special {
+      background: #475569;
+    }
+
+    .constant {
+      background: #7c3aed !important;
+    }
+
+    .zero {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 450px) {
+      .calculator {
+        padding: 14px;
+      }
+
+      .answer {
+        font-size: 30px;
+      }
+
+      .extras {
+        gap: 5px;
+      }
+
+      .extras button {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="calculator">
+
+    <div class="title">CALCULATOR PRO</div>
+
+    <div class="display">
+      <div id="history" class="history"></div>
+      <div id="answer" class="answer">0</div>
+    </div>
+
+    <div class="section-title">EXTRA FUNCTIONS</div>
+
+    <div class="extras">
+      <button onclick="scientific('sin')">sin</button>
+      <button onclick="scientific('cos')">cos</button>
+      <button onclick="scientific('tan')">tan</button>
+      <button onclick="scientific('sqrt')">√</button>
+      <button onclick="square()">x²</button>
+
+      <button onclick="scientific('log')">log</button>
+      <button onclick="scientific('ln')">ln</button>
+      <button onclick="insertValue('(')">(</button>
+      <button onclick="insertValue(')')">)</button>
+      <button class="constant" onclick="constant('pi')">π</button>
+
+      <button class="constant" onclick="constant('e')">e</button>
+      <button onclick="percentage()">%</button>
+      <button onclick="toggleSign()">±</button>
+      <button onclick="useAnswer()">ANS</button>
+      <button onclick="clearCalculator()">AC</button>
+    </div>
+
+    <div class="section-title">CALCULATOR</div>
+
+    <div class="main-buttons">
+
+      <button class="clear" onclick="clearCalculator()">C</button>
+      <button class="special" onclick="backspace()">⌫</button>
+      <button class="special" onclick="insertValue('(')">(</button>
+      <button class="operator" onclick="insertValue('/')">÷</button>
+
+      <button onclick="insertValue('7')">7</button>
+      <button onclick="insertValue('8')">8</button>
+      <button onclick="insertValue('9')">9</button>
+      <button class="operator" onclick="insertValue('*')">×</button>
+
+      <button onclick="insertValue('4')">4</button>
+      <button onclick="insertValue('5')">5</button>
+      <button onclick="insertValue('6')">6</button>
+      <button class="operator" onclick="insertValue('-')">−</button>
+
+      <button onclick="insertValue('1')">1</button>
+      <button onclick="insertValue('2')">2</button>
+      <button onclick="insertValue('3')">3</button>
+      <button class="operator" onclick="insertValue('+')">+</button>
+
+      <button class="zero" onclick="insertValue('0')">0</button>
+      <button onclick="insertValue('.')">.</button>
+      <button class="equals" onclick="calculate()">=</button>
+
+    </div>
+
+  </div>
+
+  <script>
+    const answer = document.getElementById("answer");
+    const history = document.getElementById("history");
+
+    let expression = "";
+    let lastAnswer = 0;
+    let justCalculated = false;
+
+    function updateDisplay() {
+      answer.textContent = expression || "0";
+    }
+
+    function insertValue(value) {
+      if (justCalculated) {
+        expression = "";
+        justCalculated = false;
+      }
+
+      expression += value;
+      updateDisplay();
+    }
+
+    function constant(type) {
+      if (justCalculated) {
+        expression = "";
+        justCalculated = false;
+      }
+
+      if (type === "pi") {
+        expression += "3.141592653589793";
+      }
+
+      if (type === "e") {
+        expression += "2.718281828459045";
+      }
+
+      updateDisplay();
+    }
+
+    function calculate() {
+      if (!expression) return;
+
+      try {
+        const result = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        if (!Number.isFinite(result)) {
+          throw new Error();
+        }
+
+        history.textContent = expression + " =";
+
+        lastAnswer = result;
+
+        expression = String(
+          Number(result.toFixed(12))
+        );
+
+        answer.textContent = expression;
+        justCalculated = true;
+
+      } catch {
+        history.textContent = "";
+        answer.textContent = "Error";
+        expression = "";
+      }
+    }
+
+    function clearCalculator() {
+      expression = "";
+      lastAnswer = 0;
+      justCalculated = false;
+
+      history.textContent = "";
+      answer.textContent = "0";
+    }
+
+    function backspace() {
+      if (justCalculated) {
+        clearCalculator();
+        return;
+      }
+
+      expression = expression.slice(0, -1);
+      updateDisplay();
+    }
+
+    function percentage() {
+      if (!expression) return;
+
+      try {
+        const value = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        expression = String(value / 100);
+        updateDisplay();
+
+      } catch {
+        showError();
+      }
+    }
+
+    function toggleSign() {
+      if (!expression) return;
+
+      try {
+        const value = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        expression = String(-value);
+        updateDisplay();
+
+      } catch {
+        showError();
+      }
+    }
+
+    function square() {
+      if (!expression) return;
+
+      try {
+        const value = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        expression = String(value * value);
+        updateDisplay();
+
+      } catch {
+        showError();
+      }
+    }
+
+    function scientific(type) {
+      if (!expression) return;
+
+      try {
+        const value = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        let result;
+
+        if (type === "sin") {
+          result = Math.sin(value * Math.PI / 180);
+        }
+
+        if (type === "cos") {
+          result = Math.cos(value * Math.PI / 180);
+        }
+
+        if (type === "tan") {
+          result = Math.tan(value * Math.PI / 180);
+        }
+
+        if (type === "sqrt") {
+          result = Math.sqrt(value);
+        }
+
+        if (type === "log") {
+          result = Math.log10(value);
+        }
+
+        if (type === "ln") {
+          result = Math.log(value);
+        }
+
+        if (!Number.isFinite(result)) {
+          throw new Error();
+        }
+
+        history.textContent = type + "(" + value + ")";
+
+        expression = String(
+          Number(result.toFixed(12))
+        );
+
+        answer.textContent = expression;
+        justCalculated = true;
+
+      } catch {
+        showError();
+      }
+    }
+
+    function useAnswer() {
+      if (justCalculated) {
+        expression = "";
+        justCalculated = false;
+      }
+
+      expression += String(lastAnswer);
+      updateDisplay();
+    }
+
+    function showError() {
+      answer.textContent = "Error";
+      expression = "";
+      justCalculated = false;
+    }
+
+    document.addEventListener("keydown", function(event) {
+
+      if (/^[0-9.]$/.test(event.key)) {
+        insertValue(event.key);
+      }
+
+      else if (["+", "-", "*", "/"].includes(event.key)) {
+        insertValue(event.key);
+      }
+
+      else if (event.key === "(" || event.key === ")") {
+        insertValue(event.key);
+      }
+
+      else if (event.key === "Enter" || event.key === "=") {
+        calculate();
+      }
+
+      else if (event.key === "Backspace") {
+        backspace();
+      }
+
+      else if (event.key === "Escape") {
+        clearCalculator();
+      }
+
+    });
+  </script>
+
+</body>
+</html>
